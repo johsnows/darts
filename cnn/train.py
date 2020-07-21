@@ -102,7 +102,7 @@ def main():
     train_acc, train_obj = train(train_queue, model, criterion, optimizer)
     logging.info('train_acc %f', train_acc)
 
-    valid_acc, valid_obj = infer(valid_queue, model, criterion)
+    valid_acc, valid_obj = infer(valid_queue, model, criterion, epoch)
     logging.info('valid_acc %f', valid_acc)
 
     utils.save(model, os.path.join(args.save, 'weights.pt'))

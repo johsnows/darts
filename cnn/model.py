@@ -144,11 +144,14 @@ class NetworkCIFAR(nn.Module):
     self.global_pooling = nn.AdaptiveAvgPool2d(1)
     self.classifier = nn.Linear(C_prev, num_classes)
 
-  def forward(self, input):
+  def forward(self, input, epoch=None):
     logits_aux = None
     s0 = s1 = self.stem(input)
     for i, cell in enumerate(self.cells):
       s0, s1 = s1, cell(s0, s1, self.drop_path_prob)
+      if epoch:
+        _s1=s1.cpu().numpy()
+        np.save('epoch%d_layer3.npy'.format(epoch), _s1)
       if i == 2*self._layers//3:
         if self._auxiliary and self.training:
           logits_aux = self.auxiliary_head(s1)
@@ -206,9 +209,6 @@ class NetworkImageNet(nn.Module):
     s1 = self.stem1(s0)
     for i, cell in enumerate(self.cells):
       s0, s1 = s1, cell(s0, s1, self.drop_path_prob)
-      if i==2:
-        _s1=s1.cpu().numpy()
-        np.save('layer3.npy', _s1)
 
       if i == 2 * self._layers // 3:
         if self._auxiliary and self.training:
