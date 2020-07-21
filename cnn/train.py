@@ -140,7 +140,7 @@ def train(train_queue, model, criterion, optimizer):
   return top1.avg, objs.avg
 
 
-def infer(valid_queue, model, criterion):
+def infer(valid_queue, model, criterion, epoch):
   objs = utils.AvgrageMeter()
   top1 = utils.AvgrageMeter()
   top5 = utils.AvgrageMeter()
@@ -150,7 +150,7 @@ def infer(valid_queue, model, criterion):
     input = Variable(input, volatile=True).cuda()
     target = Variable(target, volatile=True).cuda(async=True)
 
-    logits, _ = model(input)
+    logits, _ = model(input, epoch)
     loss = criterion(logits, target)
 
     prec1, prec5 = utils.accuracy(logits, target, topk=(1, 5))
