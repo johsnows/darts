@@ -3,6 +3,7 @@ import torch.nn as nn
 from operations import *
 from torch.autograd import Variable
 from utils import drop_path
+import numpy as np
 
 
 class Cell(nn.Module):
@@ -205,6 +206,10 @@ class NetworkImageNet(nn.Module):
     s1 = self.stem1(s0)
     for i, cell in enumerate(self.cells):
       s0, s1 = s1, cell(s0, s1, self.drop_path_prob)
+      if i==2:
+        _s1=s1.cpu().numpy()
+        np.save('layer3.npy', _s1)
+
       if i == 2 * self._layers // 3:
         if self._auxiliary and self.training:
           logits_aux = self.auxiliary_head(s1)
