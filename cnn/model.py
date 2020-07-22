@@ -150,7 +150,7 @@ class NetworkCIFAR(nn.Module):
     for i, cell in enumerate(self.cells):
       s0, s1 = s1, cell(s0, s1, self.drop_path_prob)
       if epoch:
-        _s1=s1.cpu().numpy()
+        _s1=s1.cpu().detach().numpy()
         np.save('epoch%d_layer3.npy'.format(epoch), _s1)
       if i == 2*self._layers//3:
         if self._auxiliary and self.training:
